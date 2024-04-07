@@ -1,0 +1,6 @@
+figure.autolayout:True
+font.family: serif
+font.serif: Computer Modern
+text.latex.preamble: "\usepackage{mathtools}"
+text.usetex: True
+figure.dpi: 750
