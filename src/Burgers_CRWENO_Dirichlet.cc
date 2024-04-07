@@ -119,6 +119,7 @@ void wenoL_CR(int nx, std::vector<double> u, std::vector<double> &uL)
   thomasTridiagonal_CRWENO(a, b, c, uL, r, 1, nx);
   return;
 }
+
 void wenoR_CR(int nx, std::vector<double> u, std::vector<double> &uR)
 {
   std::vector<double> a(nx + 1, 0);
@@ -204,6 +205,7 @@ std::vector<double> wcL_CR(double v1, double v2, double v3, double v4,
 
   return returnValue;
 }
+
 std::vector<double> wcR_CR(double v1, double v2, double v3, double v4,
                            double v5)
 {
@@ -237,6 +239,7 @@ std::vector<double> wcR_CR(double v1, double v2, double v3, double v4,
 
   return returnValue;
 }
+
 void thomasTridiagonal_CRWENO(std::vector<double> a, std::vector<double> b,
                               std::vector<double> c, std::vector<double> &u,
                               std::vector<double> q, int s, int e)

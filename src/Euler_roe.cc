@@ -148,6 +148,7 @@ void flux_roe(int nx, double gamma, std::vector<std::vector<double>> q,
   }
   return;
 }
+
 void roe(int nx, double gamma, std::vector<std::vector<double>> uL,
          std::vector<std::vector<double>> uR,
          std::vector<std::vector<double>> &f,

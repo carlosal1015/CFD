@@ -107,6 +107,7 @@ void wenoL(int nx, std::vector<double> u, std::vector<double> &uL)
 
   return;
 }
+
 void wenoR(int nx, std::vector<double> u, std::vector<double> &uR)
 {
   int i = 1;
@@ -175,6 +176,7 @@ double wcL(double v1, double v2, double v3, double v4, double v5)
 
   return f;
 }
+
 double wcR(double v1, double v2, double v3, double v4, double v5)
 {
   double eps = 1.0e-6;

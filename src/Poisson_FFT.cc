@@ -1,5 +1,5 @@
 #include "1D_BTCS.hh"
-#include <complex>
+// #include <complex>
 #include <fftw3.h>
 
 void Poisson_FFT()
@@ -8,7 +8,7 @@ void Poisson_FFT()
   double x_r = 1.0;
   int nx = 512;
   double dx = (x_r - x_l) / nx;
-  vector<double> x(nx + 1, 0);
+  std::vector<double> x(nx + 1, 0);
   for (int i = 0; i < nx + 1; i++) {
     x[i] = i * dx + x_l;
   }
@@ -17,14 +17,14 @@ void Poisson_FFT()
   double y_t = 1.0;
   int ny = 512;
   double dy = (y_t - y_b) / ny;
-  vector<double> y(ny + 1, 0);
+  std::vector<double> y(ny + 1, 0);
   for (int i = 0; i < ny + 1; i++) {
     y[i] = i * dy + y_b;
   }
 
-  vector<vector<double>> ue(ny + 1, vector<double>(nx + 1, 0.0));
-  vector<vector<double>> f(ny + 1, vector<double>(nx + 1, 0.0));
-  vector<vector<double>> un(ny + 1, vector<double>(nx + 1, 0.0));
+  std::vector<std::vector<double>> ue(ny + 1, std::vector<double>(nx + 1, 0.0));
+  std::vector<std::vector<double>> f(ny + 1, std::vector<double>(nx + 1, 0.0));
+  std::vector<std::vector<double>> un(ny + 1, std::vector<double>(nx + 1, 0.0));
   double *fp = (double *)malloc((ny + 1) * (nx + 1) * sizeof(double));
   if (fp == nullptr) {
     std::cerr << "Memory allocation failed." << std::endl;
@@ -32,24 +32,26 @@ void Poisson_FFT()
 
   // analytic solution and initial condition
   double km = 16.0;
-  double c1 = pow(1.0 / km, 2);
+  double c1 = std::pow(1.0 / km, 2);
   double c2 = -8.0 * Pi * Pi;
 
   for (int i = 0; i < ny + 1; i++) {
     for (int j = 0; j < nx + 1; j++) {
-      ue[i][j] = sin(2.0 * Pi * x[j]) * sin(2.0 * Pi * y[i]) +
-                 c1 * sin(km * 2.0 * Pi * x[j]) * sin(km * 2.0 * Pi * y[i]);
-      f[i][j] = c2 * sin(2.0 * Pi * x[j]) * sin(2.0 * Pi * y[i]) +
-                c2 * sin(km * 2.0 * Pi * x[j]) * sin(km * 2.0 * Pi * y[i]);
+      ue[i][j] =
+          std::sin(2.0 * Pi * x[j]) * std::sin(2.0 * Pi * y[i]) +
+          c1 * std::sin(km * 2.0 * Pi * x[j]) * std::sin(km * 2.0 * Pi * y[i]);
+      f[i][j] =
+          c2 * std::sin(2.0 * Pi * x[j]) * std::sin(2.0 * Pi * y[i]) +
+          c2 * std::sin(km * 2.0 * Pi * x[j]) * std::sin(km * 2.0 * Pi * y[i]);
       fp[(nx + 1) * i + j] = f[i][j];
     }
   }
 
   // FFT
-  vector<double> kx(nx, 0);
-  vector<double> ky(ny, 0);
-  vector<vector<double>> e(ny, vector<double>(nx, 0.0));
-  vector<vector<double>> u(ny, vector<double>(nx, 0.0));
+  std::vector<double> kx(nx, 0);
+  std::vector<double> ky(ny, 0);
+  std::vector<std::vector<double>> e(ny, std::vector<double>(nx, 0.0));
+  std::vector<std::vector<double>> u(ny, std::vector<double>(nx, 0.0));
   double aa = -2.0 / dx / dx - 2.0 / dy / dy;
   double bb = 2.0 / dx / dx;
   double cc = 2.0 / dy / dy;
@@ -107,9 +109,9 @@ void Poisson_FFT()
       for (int j = 0; j < nx + 1; j++) {
         outfile << un[j][i] << " ";
       }
-      outfile << endl;
+      outfile << std::endl;
     }
-    outfile << endl;
+    outfile << std::endl;
   }
   else {
     std::cerr << "Error: unable to open file for writing" << std::endl;

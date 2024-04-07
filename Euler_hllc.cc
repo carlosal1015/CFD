@@ -2,7 +2,7 @@
 
 int main()
 {
-  Euler_roe();
+  Euler_hllc();
 
   return 0;
 }

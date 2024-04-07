@@ -85,6 +85,7 @@ void rhs_FS(int nx, double dx, std::vector<double> u, std::vector<double> &r)
   }
   return;
 }
+
 void waveSpeed(int nx, std::vector<double> u, std::vector<double> &alpha)
 {
   int i = 2;

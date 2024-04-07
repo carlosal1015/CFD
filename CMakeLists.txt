@@ -57,5 +57,25 @@ add_executable(Riemann Riemann.cc
 target_include_directories(Riemann PUBLIC "include")
 
 add_executable(Euler_roe Euler_roe.cc
-  src/Euler_roe.cc)
+  src/Euler_roe.cc
+  src/Burgers_WENO5_Dirichlet.cc)
 target_include_directories(Euler_roe PUBLIC "include")
+
+add_executable(Euler_hllc Euler_hllc.cc
+  src/Euler_HLLC.cc
+  src/Euler_roe.cc
+  src/Burgers_WENO5_Dirichlet.cc)
+target_include_directories(Euler_hllc PUBLIC "include")
+
+add_executable(Euler_rusanov Euler_rusanov.cc
+  src/Euler_rusanov.cc
+  src/Euler_roe.cc
+  src/Burgers_WENO5_Dirichlet.cc)
+target_include_directories(Euler_rusanov PUBLIC "include")
+
+# find_package(FFTW3 REQUIRED)
+# include_directories(${FFTW3_INCLUDE_DIRS})
+add_executable(Poisson_FFT Poisson_FFT.cc)
+target_link_libraries(Poisson_FFT PUBLIC fftw3)
+target_include_directories(Poisson_FFT PUBLIC "include")
+# src/WENO5_Dirichlet.cc)

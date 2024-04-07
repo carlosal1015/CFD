@@ -1,21 +1,21 @@
 #include "1D_BTCS.hh"
 
-using namespace std;
-
 void Euler_rusanov()
 {
   int nx = 256;
   double dx = 1.0 / nx;
   double dt = 0.0001;
   double t = 0.2;
-  int nt = ceil(t / dt);
-  vector<double> x(nx, 0);
-  vector<vector<double>> qt(
-      3, vector<double>(nx, 0)); // temperory array by RK3 scheme
-  vector<vector<vector<double>>> q(
-      nt, vector<vector<double>>(3, vector<double>(nx, 0))); // all timesteps
-  vector<vector<double>> r(3, vector<double>(nx, 0)); // general spatial FD
-  double gamma = 1.4;                                 // specific gas ratio
+  int nt = std::ceil(t / dt);
+  std::vector<double> x(nx, 0);
+  std::vector<std::vector<double>> qt(
+      3, std::vector<double>(nx, 0)); // temperory array by RK3 scheme
+  std::vector<std::vector<std::vector<double>>> q(
+      nt, std::vector<std::vector<double>>(
+              3, std::vector<double>(nx, 0))); // all timesteps
+  std::vector<std::vector<double>> r(
+      3, std::vector<double>(nx, 0)); // general spatial FD
+  double gamma = 1.4;                 // specific gas ratio
 
   // Sod's Riemann problem
   // left side
@@ -74,9 +74,9 @@ void Euler_rusanov()
       for (int i = 0; i < nx; i++) {
         outfile << q[nt - 1][m][i] << " ";
       }
-      outfile << endl;
+      outfile << std::endl;
     }
-    outfile << endl;
+    outfile << std::endl;
   }
   else {
     std::cerr << "Error: unable to open file for writing" << std::endl;
@@ -84,16 +84,17 @@ void Euler_rusanov()
   return;
 }
 
-void rhs_rusanov(int nx, double dx, double gamma, vector<vector<double>> q,
-                 vector<vector<double>> &r)
+void rhs_rusanov(int nx, double dx, double gamma,
+                 std::vector<std::vector<double>> q,
+                 std::vector<std::vector<double>> &r)
 {
   // left and right side fluxes at the interface
-  vector<vector<double>> qL(3, vector<double>(nx + 1, 0));
-  vector<vector<double>> qR(3, vector<double>(nx + 1, 0));
+  std::vector<std::vector<double>> qL(3, std::vector<double>(nx + 1, 0));
+  std::vector<std::vector<double>> qR(3, std::vector<double>(nx + 1, 0));
 
-  vector<vector<double>> fL(3, vector<double>(nx + 1, 0));
-  vector<vector<double>> fR(3, vector<double>(nx + 1, 0));
-  vector<vector<double>> f(3, vector<double>(nx + 1, 0));
+  std::vector<std::vector<double>> fL(3, std::vector<double>(nx + 1, 0));
+  std::vector<std::vector<double>> fR(3, std::vector<double>(nx + 1, 0));
+  std::vector<std::vector<double>> f(3, std::vector<double>(nx + 1, 0));
 
   qL = wenoL_roe(nx, q);
   qR = wenoR_roe(nx, q);
@@ -109,13 +110,15 @@ void rhs_rusanov(int nx, double dx, double gamma, vector<vector<double>> q,
   }
   return;
 }
-void rusanov(int nx, double gamma, vector<vector<double>> qL,
-             vector<vector<double>> qR, vector<vector<double>> &f,
-             vector<vector<double>> fL, vector<vector<double>> fR)
+void rusanov(int nx, double gamma, std::vector<std::vector<double>> qL,
+             std::vector<std::vector<double>> qR,
+             std::vector<std::vector<double>> &f,
+             std::vector<std::vector<double>> fL,
+             std::vector<std::vector<double>> fR)
 {
 
-  vector<double> ps(nx + 1, 0);
-  vector<double> rad(nx, 0);
+  std::vector<double> ps(nx + 1, 0);
+  std::vector<double> rad(nx, 0);
   // spectral radius of Jacobian
   double gm = gamma - 1.0;
   for (int i = 0; i < nx + 1; i++) {
@@ -132,11 +135,16 @@ void rusanov(int nx, double gamma, vector<vector<double>> qL,
     double ppRR = gm * (eeRR * rhRR - 0.5 * rhRR * (uuRR * uuRR));
     double hhRR = eeRR + ppRR / rhRR;
 
-    double alpha = 1.0 / (sqrt(abs(rhLL)) + sqrt(abs(rhRR)));
+    double alpha =
+        1.0 / (std::sqrt(std::abs(rhLL)) + std::sqrt(std::abs(rhRR)));
 
-    double uu = (sqrt(abs(rhLL)) * uuLL + sqrt(abs(rhRR)) * uuRR) * alpha;
-    double hh = (sqrt(abs(rhLL)) * hhLL + sqrt(abs(rhRR)) * hhRR) * alpha;
-    double aa = sqrt(abs(gm * (hh - 0.5 * uu * uu)));
+    double uu =
+        (std::sqrt(std::abs(rhLL)) * uuLL + std::sqrt(std::abs(rhRR)) * uuRR) *
+        alpha;
+    double hh =
+        (std::sqrt(std::abs(rhLL)) * hhLL + std::sqrt(std::abs(rhRR)) * hhRR) *
+        alpha;
+    double aa = std::sqrt(std::abs(gm * (hh - 0.5 * uu * uu)));
 
     ps[i] = abs(aa + uu);
   }

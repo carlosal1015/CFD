@@ -1,21 +1,21 @@
 #include "1D_BTCS.hh"
 
-using namespace std;
-
 void Euler_hllc()
 {
   int nx = 256;
   double dx = 1.0 / nx;
   double dt = 0.0001;
   double t = 0.2;
-  int nt = ceil(t / dt);
-  vector<double> x(nx, 0);
-  vector<vector<double>> qt(
-      3, vector<double>(nx, 0)); // temperory array by RK3 scheme
-  vector<vector<vector<double>>> q(
-      nt, vector<vector<double>>(3, vector<double>(nx, 0))); // all timesteps
-  vector<vector<double>> r(3, vector<double>(nx, 0)); // general spatial FD
-  double gamma = 1.4;                                 // specific gas ratio
+  int nt = std::ceil(t / dt);
+  std::vector<double> x(nx, 0);
+  std::vector<std::vector<double>> qt(
+      3, std::vector<double>(nx, 0)); // temperory array by RK3 scheme
+  std::vector<std::vector<std::vector<double>>> q(
+      nt, std::vector<std::vector<double>>(
+              3, std::vector<double>(nx, 0))); // all timesteps
+  std::vector<std::vector<double>> r(
+      3, std::vector<double>(nx, 0)); // general spatial FD
+  double gamma = 1.4;                 // specific gas ratio
 
   // Sod's Riemann problem
   // left side
@@ -74,9 +74,9 @@ void Euler_hllc()
       for (int i = 0; i < nx; i++) {
         outfile << q[nt - 1][m][i] << " ";
       }
-      outfile << endl;
+      outfile << std::endl;
     }
-    outfile << endl;
+    outfile << std::endl;
   }
   else {
     std::cerr << "Error: unable to open file for writing" << std::endl;
@@ -84,16 +84,17 @@ void Euler_hllc()
   return;
 }
 
-void rhs_hllc(int nx, double dx, double gamma, vector<vector<double>> q,
-              vector<vector<double>> &r)
+void rhs_hllc(int nx, double dx, double gamma,
+              std::vector<std::vector<double>> q,
+              std::vector<std::vector<double>> &r)
 {
   // left and right side fluxes at the interface
-  vector<vector<double>> qL(3, vector<double>(nx + 1, 0));
-  vector<vector<double>> qR(3, vector<double>(nx + 1, 0));
+  std::vector<std::vector<double>> qL(3, std::vector<double>(nx + 1, 0));
+  std::vector<std::vector<double>> qR(3, std::vector<double>(nx + 1, 0));
 
-  vector<vector<double>> fL(3, vector<double>(nx + 1, 0));
-  vector<vector<double>> fR(3, vector<double>(nx + 1, 0));
-  vector<vector<double>> f(3, vector<double>(nx + 1, 0));
+  std::vector<std::vector<double>> fL(3, std::vector<double>(nx + 1, 0));
+  std::vector<std::vector<double>> fR(3, std::vector<double>(nx + 1, 0));
+  std::vector<std::vector<double>> f(3, std::vector<double>(nx + 1, 0));
 
   qL = wenoL_roe(nx, q);
   qR = wenoR_roe(nx, q);
@@ -109,11 +110,13 @@ void rhs_hllc(int nx, double dx, double gamma, vector<vector<double>> q,
   }
   return;
 }
-void hllc(int nx, double gamma, vector<vector<double>> uL,
-          vector<vector<double>> uR, vector<vector<double>> &f,
-          vector<vector<double>> fL, vector<vector<double>> fR)
+void hllc(int nx, double gamma, std::vector<std::vector<double>> uL,
+          std::vector<std::vector<double>> uR,
+          std::vector<std::vector<double>> &f,
+          std::vector<std::vector<double>> fL,
+          std::vector<std::vector<double>> fR)
 {
-  vector<double> Ds(3, 0);
+  std::vector<double> Ds(3, 0);
   Ds[1] = 1.0;
   double gm = gamma - 1.0;
 
@@ -123,17 +126,17 @@ void hllc(int nx, double gamma, vector<vector<double>> uL,
     double uuLL = uL[1][i] / rhLL;
     double eeLL = uL[2][i] / rhLL;
     double ppLL = gm * (eeLL * rhLL - 0.5 * rhLL * (uuLL * uuLL));
-    double aaLL = sqrt(abs(gamma * ppLL / rhLL));
+    double aaLL = std::sqrt(std::abs(gamma * ppLL / rhLL));
 
     double rhRR = uR[0][i];
     double uuRR = uR[1][i] / rhRR;
     double eeRR = uR[2][i] / rhRR;
     double ppRR = gm * (eeRR * rhRR - 0.5 * rhRR * (uuRR * uuRR));
-    double aaRR = sqrt(abs(gamma * ppRR / rhRR));
+    double aaRR = std::sqrt(std::abs(gamma * ppRR / rhRR));
 
     // compute SLand Sr
-    double SL = min(uuLL, uuRR) - max(aaLL, aaRR);
-    double SR = max(uuLL, uuRR) + max(aaLL, aaRR);
+    double SL = std::min(uuLL, uuRR) - std::max(aaLL, aaRR);
+    double SR = std::max(uuLL, uuRR) + std::max(aaLL, aaRR);
 
     // compute compound speed
     double SP =

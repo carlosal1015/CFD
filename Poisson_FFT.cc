@@ -2,7 +2,7 @@
 
 int main()
 {
-  Euler_roe();
+  Poisson_FFT();
 
   return 0;
 }
