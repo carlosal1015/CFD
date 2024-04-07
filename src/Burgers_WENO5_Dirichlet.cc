@@ -1,7 +1,5 @@
 #include "1D_BTCS.hh"
 
-using namespace std;
-
 void WENO5_Dirichlet()
 {
   double x_l = 0;
@@ -11,17 +9,17 @@ void WENO5_Dirichlet()
 
   double t = 0.25;
   double dt = 0.0001;
-  int nt = ceil(t / dt);
+  int nt = std::ceil(t / dt);
   dt = t / nt;
 
-  vector<vector<double>> u(nt + 1,
-                           vector<double>(nx + 1, 0)); // one timestep = one row
-  vector<double> ut(nx + 1, 0); // temperory array by RK3 scheme
-  vector<double> r(nx + 1, 0);  // general spatial FD
+  std::vector<std::vector<double>> u(
+      nt + 1, std::vector<double>(nx + 1, 0)); // one timestep = one row
+  std::vector<double> ut(nx + 1, 0);           // temperory array by RK3 scheme
+  std::vector<double> r(nx + 1, 0);            // general spatial FD
 
   // initial condition
   for (int i = 0; i < nx + 1; i++) {
-    u[0][i] = sin(2 * Pi * dx * i);
+    u[0][i] = std::sin(2 * Pi * dx * i);
   }
 
   for (int j = 1; j < nt + 1; j++) // one time step
@@ -48,7 +46,7 @@ void WENO5_Dirichlet()
     for (int i = 0; i < nx + 1; i++) {
       outfile << u[nt][i] << " ";
     }
-    outfile << endl;
+    outfile << std::endl;
   }
   else {
     std::cerr << "Error: unable to open file for writing" << std::endl;
@@ -56,10 +54,10 @@ void WENO5_Dirichlet()
   return;
 }
 
-void rhs(int nx, double dx, vector<double> u, vector<double> &r)
+void rhs(int nx, double dx, std::vector<double> u, std::vector<double> &r)
 {
-  vector<double> uL(nx, 0);
-  vector<double> uR(nx + 1, 0);
+  std::vector<double> uL(nx, 0);
+  std::vector<double> uR(nx + 1, 0);
 
   wenoL(nx, u, uL);
   wenoR(nx, u, uR);
@@ -73,7 +71,7 @@ void rhs(int nx, double dx, vector<double> u, vector<double> &r)
   return;
 }
 
-void wenoL(int nx, vector<double> u, vector<double> &uL)
+void wenoL(int nx, std::vector<double> u, std::vector<double> &uL)
 {
   int i = 0;
   double v1 = 3.0 * u[i] - 2.0 * u[i + 1];
@@ -110,7 +108,7 @@ void wenoL(int nx, vector<double> u, vector<double> &uL)
   return;
 }
 
-void wenoR(int nx, vector<double> u, vector<double> &uR)
+void wenoR(int nx, std::vector<double> u, std::vector<double> &uR)
 {
   int i = 1;
   double v1 = 2.0 * u[i - 1] - u[i];
@@ -152,16 +150,17 @@ double wcL(double v1, double v2, double v3, double v4, double v5)
   double eps = 1.0e-6;
 
   // smoothness indicators
-  double s1 = 13.0 / 12.0 * pow(v1 - 2.0 * v2 + v3, 2) +
-              0.25 * pow(v1 - 4.0 * v2 + 3.0 * v3, 2);
-  double s2 = 13.0 / 12.0 * pow(v2 - 2.0 * v3 + v4, 2) + 0.25 * pow(v2 - v4, 2);
-  double s3 = 13.0 / 12.0 * pow(v3 - 2.0 * v4 + v5, 2) +
-              0.25 * pow(3.0 * v3 - 4.0 * v4 + v5, 2);
+  double s1 = 13.0 / 12.0 * std::pow(v1 - 2.0 * v2 + v3, 2) +
+              0.25 * std::pow(v1 - 4.0 * v2 + 3.0 * v3, 2);
+  double s2 = 13.0 / 12.0 * std::pow(v2 - 2.0 * v3 + v4, 2) +
+              0.25 * std::pow(v2 - v4, 2);
+  double s3 = 13.0 / 12.0 * std::pow(v3 - 2.0 * v4 + v5, 2) +
+              0.25 * std::pow(3.0 * v3 - 4.0 * v4 + v5, 2);
 
   // computing nonlinear weights w1, w2, w3
-  double c1 = 1.0e-1 / (pow(eps + s1, 2));
-  double c2 = 6.0e-1 / (pow(eps + s2, 2));
-  double c3 = 3.0e-1 / (pow(eps + s3, 2));
+  double c1 = 1.0e-1 / (std::pow(eps + s1, 2));
+  double c2 = 6.0e-1 / (std::pow(eps + s2, 2));
+  double c3 = 3.0e-1 / (std::pow(eps + s3, 2));
 
   double w1 = c1 / (c1 + c2 + c3);
   double w2 = c2 / (c1 + c2 + c3);
@@ -183,16 +182,17 @@ double wcR(double v1, double v2, double v3, double v4, double v5)
   double eps = 1.0e-6;
 
   // smoothness indicators
-  double s1 = 13.0 / 12.0 * pow(v1 - 2.0 * v2 + v3, 2) +
-              0.25 * pow(v1 - 4.0 * v2 + 3.0 * v3, 2);
-  double s2 = 13.0 / 12.0 * pow(v2 - 2.0 * v3 + v4, 2) + 0.25 * pow(v2 - v4, 2);
-  double s3 = 13.0 / 12.0 * pow(v3 - 2.0 * v4 + v5, 2) +
-              0.25 * pow(3.0 * v3 - 4.0 * v4 + v5, 2);
+  double s1 = 13.0 / 12.0 * std::pow(v1 - 2.0 * v2 + v3, 2) +
+              0.25 * std::pow(v1 - 4.0 * v2 + 3.0 * v3, 2);
+  double s2 = 13.0 / 12.0 * std::pow(v2 - 2.0 * v3 + v4, 2) +
+              0.25 * std::pow(v2 - v4, 2);
+  double s3 = 13.0 / 12.0 * std::pow(v3 - 2.0 * v4 + v5, 2) +
+              0.25 * std::pow(3.0 * v3 - 4.0 * v4 + v5, 2);
 
   // computing nonlinear weights w1, w2, w3
-  double c1 = 0.3 / (pow(eps + s1, 2));
-  double c2 = 0.6 / (pow(eps + s2, 2));
-  double c3 = 0.1 / (pow(eps + s3, 2));
+  double c1 = 0.3 / (std::pow(eps + s1, 2));
+  double c2 = 0.6 / (std::pow(eps + s2, 2));
+  double c3 = 0.1 / (std::pow(eps + s3, 2));
 
   double w1 = c1 / (c1 + c2 + c3);
   double w2 = c2 / (c1 + c2 + c3);

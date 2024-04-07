@@ -89,3 +89,4 @@ void rusanov(int, double, std::vector<std::vector<double>>,
 
 // 2D Poisson equation
 void Poisson_FFT();
+void Poisson_CG();

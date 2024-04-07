@@ -73,9 +73,15 @@ add_executable(Euler_rusanov Euler_rusanov.cc
   src/Burgers_WENO5_Dirichlet.cc)
 target_include_directories(Euler_rusanov PUBLIC "include")
 
-# find_package(FFTW3 REQUIRED)
-# include_directories(${FFTW3_INCLUDE_DIRS})
-add_executable(Poisson_FFT Poisson_FFT.cc)
+add_executable(hello_fftw3 hello_fftw3.cc)
+target_link_libraries(hello_fftw3 PUBLIC fftw3)
+
+add_executable(Poisson_FFT Poisson_FFT.cc
+  src/Poisson_FFT.cc)
 target_link_libraries(Poisson_FFT PUBLIC fftw3)
 target_include_directories(Poisson_FFT PUBLIC "include")
-# src/WENO5_Dirichlet.cc)
+
+add_executable(Poisson_CG Poisson_CG.cc
+  src/Poisson_CG.cc)
+target_link_libraries(Poisson_CG PUBLIC fftw3)
+target_include_directories(Poisson_CG PUBLIC "include")
