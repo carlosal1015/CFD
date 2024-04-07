@@ -8,7 +8,7 @@ void Poisson_GaussSeidel()
   double x_r = 1.0;
   int nx = 512;
   double dx = (x_r - x_l) / nx;
-  vector<double> x(nx + 1, 0);
+  std::vector<double> x(nx + 1, 0);
   for (int i = 0; i < nx + 1; i++) {
     x[i] = i * dx + x_l;
   }
@@ -17,7 +17,7 @@ void Poisson_GaussSeidel()
   double y_t = 1.0;
   int ny = 512;
   double dy = (y_t - y_b) / ny;
-  vector<double> y(ny + 1, 0);
+  std::vector<double> y(ny + 1, 0);
   for (int i = 0; i < ny + 1; i++) {
     y[i] = i * dy + y_b;
   }
@@ -25,9 +25,9 @@ void Poisson_GaussSeidel()
   double tolerance = 1.0e-4;
   int max_iter = 10000;
 
-  vector<vector<double>> ue(ny + 1, vector<double>(nx + 1, 0.0));
-  vector<vector<double>> f(ny + 1, vector<double>(nx + 1, 0.0));
-  vector<vector<double>> un(ny + 1, vector<double>(nx + 1, 0.0));
+  std::vector<std::vector<double>> ue(ny + 1, std::vector<double>(nx + 1, 0.0));
+  std::vector<std::vector<double>> f(ny + 1, std::vector<double>(nx + 1, 0.0));
+  std::vector<std::vector<double>> un(ny + 1, std::vector<double>(nx + 1, 0.0));
 
   // analytic solution and initial condition
   for (int i = 0; i < ny + 1; i++) {
@@ -45,7 +45,7 @@ void Poisson_GaussSeidel()
     un[nx][i] = ue[nx][i];
   }
 
-  vector<vector<double>> r(ny + 1, vector<double>(nx + 1, 0.0));
+  std::vector<std::vector<double>> r(ny + 1, std::vector<double>(nx + 1, 0.0));
   double init_rms = 0.0;
   double rms = 0.0;
 
@@ -62,7 +62,7 @@ void Poisson_GaussSeidel()
       init_rms += r[i][j] * r[i][j];
     }
   }
-  init_rms = sqrt(init_rms / (nx - 1) / (ny - 1));
+  init_rms = std::sqrt(init_rms / (nx - 1) / (ny - 1));
   rms = init_rms;
 
   int iter_count = 0;
@@ -89,11 +89,11 @@ void Poisson_GaussSeidel()
         rms += r[i][j] * r[i][j];
       }
     }
-    rms = sqrt(rms / (nx - 1) / (ny - 1));
-    cout << "iteration times " << iter_count << endl;
-    cout << "residual " << rms << endl;
+    rms = std::sqrt(rms / (nx - 1) / (ny - 1));
+    std::cout << "iteration times " << iter_count << std::endl;
+    std::cout << "residual " << rms << std::endl;
   }
-  cout << "iteration times until convergence:" << iter_count << endl;
+  std::cout << "iteration times until convergence:" << iter_count << std::endl;
 
   // write
   std::ofstream outfile("Poisson_GaussSeidel.dat");
@@ -102,9 +102,9 @@ void Poisson_GaussSeidel()
       for (int j = 0; j < nx + 1; j++) {
         outfile << un[i][j] << " ";
       }
-      outfile << endl;
+      outfile << std::endl;
     }
-    outfile << endl;
+    outfile << std::endl;
   }
   else {
     std::cerr << "Error: unable to open file for writing" << std::endl;

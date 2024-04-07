@@ -85,3 +85,13 @@ add_executable(Poisson_CG Poisson_CG.cc
   src/Poisson_CG.cc)
 target_link_libraries(Poisson_CG PUBLIC fftw3)
 target_include_directories(Poisson_CG PUBLIC "include")
+
+add_executable(Poisson_GaussSeidel Poisson_GaussSeidel.cc
+  src/Poisson_GaussSeidel.cc)
+target_link_libraries(Poisson_GaussSeidel PUBLIC fftw3)
+target_include_directories(Poisson_GaussSeidel PUBLIC "include")
+
+add_executable(Poisson_Multigrid Poisson_Multigrid.cc
+  src/Poisson_Multigrid.cc)
+target_link_libraries(Poisson_Multigrid PUBLIC fftw3)
+target_include_directories(Poisson_Multigrid PUBLIC "include")

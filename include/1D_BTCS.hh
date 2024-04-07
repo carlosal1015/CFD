@@ -90,3 +90,11 @@ void rusanov(int, double, std::vector<std::vector<double>>,
 // 2D Poisson equation
 void Poisson_FFT();
 void Poisson_CG();
+void Poisson_GaussSeidel();
+void Poisson_MG();
+void restriction(int, int, int, int, std::vector<std::vector<double>>,
+                 std::vector<std::vector<double>> &);
+void prolongation(int, int, int, int, std::vector<std::vector<double>>,
+                  std::vector<std::vector<double>>);
+void GaussSeidel_MG(int, int, double, double, std::vector<std::vector<double>>,
+                    std::vector<std::vector<double>> &, int);

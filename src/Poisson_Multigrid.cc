@@ -7,7 +7,7 @@ void Poisson_MG()
   double x_r = 1.0;
   int nx = 128;
   double dx = (x_r - x_l) / nx;
-  vector<double> x(nx + 1, 0);
+  std::vector<double> x(nx + 1, 0);
   for (int i = 0; i < nx + 1; i++) {
     x[i] = i * dx + x_l;
   }
@@ -16,7 +16,7 @@ void Poisson_MG()
   double y_t = 1.0;
   int ny = 128;
   double dy = (y_t - y_b) / ny;
-  vector<double> y(ny + 1, 0);
+  std::vector<double> y(ny + 1, 0);
   for (int i = 0; i < ny + 1; i++) {
     y[i] = i * dy + y_b;
   }
@@ -27,21 +27,22 @@ void Poisson_MG()
   int v2 = 2; // prolongation
   int v3 = 2; // coarsest level
 
-  vector<vector<double>> ue(ny + 1, vector<double>(nx + 1, 0.0));
-  vector<vector<double>> f(ny + 1, vector<double>(nx + 1, 0.0));
-  vector<vector<double>> un(ny + 1, vector<double>(nx + 1, 0.0));
+  std::vector<std::vector<double>> ue(ny + 1, std::vector<double>(nx + 1, 0.0));
+  std::vector<std::vector<double>> f(ny + 1, std::vector<double>(nx + 1, 0.0));
+  std::vector<std::vector<double>> un(ny + 1, std::vector<double>(nx + 1, 0.0));
 
   // analytic solution and initial condition
   double km = 16.0;
-  double c1 = pow(1.0 / km, 2);
+  double c1 = std::pow(1.0 / km, 2);
   double c2 = -2.0 * Pi * Pi;
 
   for (int i = 0; i < ny + 1; i++) {
     for (int j = 0; j < nx + 1; j++) {
-      ue[i][j] = sin(2.0 * Pi * x[j]) * sin(2.0 * Pi * y[i]) +
-                 c1 * sin(km * Pi * x[j]) * sin(km * Pi * y[i]);
-      f[i][j] = 4.0 * c2 * sin(2.0 * Pi * x[j]) * sin(2.0 * Pi * y[i]) +
-                c2 * sin(km * Pi * x[j]) * sin(km * Pi * y[i]);
+      ue[i][j] = std::sin(2.0 * Pi * x[j]) * std::sin(2.0 * Pi * y[i]) +
+                 c1 * std::sin(km * Pi * x[j]) * std::sin(km * Pi * y[i]);
+      f[i][j] =
+          4.0 * c2 * std::sin(2.0 * Pi * x[j]) * std::sin(2.0 * Pi * y[i]) +
+          c2 * std::sin(km * Pi * x[j]) * std::sin(km * Pi * y[i]);
     }
   }
   for (int i = 0; i < ny + 1; i++) {
@@ -53,7 +54,7 @@ void Poisson_MG()
     un[ny][i] = ue[ny][i];
   }
 
-  vector<vector<double>> r(ny + 1, vector<double>(nx + 1, 0.0));
+  std::vector<std::vector<double>> r(ny + 1, std::vector<double>(nx + 1, 0.0));
   double init_rms = 0.0;
   double rms = 0.0;
 
@@ -70,14 +71,14 @@ void Poisson_MG()
       init_rms += r[i][j] * r[i][j];
     }
   }
-  init_rms = sqrt(init_rms / (nx - 1) / (ny - 1));
+  init_rms = std::sqrt(init_rms / (nx - 1) / (ny - 1));
   rms = init_rms;
 
   // allocate memory for grid size at different levels
-  vector<int> lnx(2, 0);
-  vector<int> lny(2, 0);
-  vector<double> ldx(2, 0.0);
-  vector<double> ldy(2, 0.0);
+  std::vector<int> lnx(2, 0);
+  std::vector<int> lny(2, 0);
+  std::vector<double> ldx(2, 0.0);
+  std::vector<double> ldy(2, 0.0);
 
   lnx[0] = nx;
   lny[0] = ny;
@@ -90,11 +91,14 @@ void Poisson_MG()
 
   // allocate matrix for storage at fine level, residual at fine level is
   // already defined at global level
-  vector<vector<double>> prol_fine(lny[0] + 1, vector<double>(lnx[0] + 1, 0.0));
+  std::vector<std::vector<double>> prol_fine(
+      lny[0] + 1, std::vector<double>(lnx[0] + 1, 0.0));
 
   // allocate matrix for storage at coarse levels
-  vector<vector<double>> fc(lny[1] + 1, vector<double>(lnx[1] + 1, 0.0));
-  vector<vector<double>> unc(lny[1] + 1, vector<double>(lnx[1] + 1, 0.0));
+  std::vector<std::vector<double>> fc(lny[1] + 1,
+                                      std::vector<double>(lnx[1] + 1, 0.0));
+  std::vector<std::vector<double>> unc(lny[1] + 1,
+                                       std::vector<double>(lnx[1] + 1, 0.0));
 
   int iter_count = 0;
   double exp_rms = tolerance * init_rms;
@@ -117,7 +121,7 @@ void Poisson_MG()
         rms += r[i][j] * r[i][j];
       }
     }
-    rms = sqrt(rms / (nx - 1) / (ny - 1));
+    rms = std::sqrt(rms / (nx - 1) / (ny - 1));
 
     // restrict the residual from fine level to coarse level
     restriction(lnx[0], lny[0], lnx[1], lny[1], r, fc);
@@ -134,10 +138,10 @@ void Poisson_MG()
     // relax v2 times
     GaussSeidel_MG(lnx[0], lny[0], dx, dy, f, un, v2);
 
-    cout << "iteration times " << iter_count << endl;
-    cout << "residual " << rms << endl;
+    std::cout << "iteration times " << iter_count << std::endl;
+    std::cout << "residual " << rms << std::endl;
   }
-  cout << "iteration times until convergence:" << iter_count << endl;
+  std::cout << "iteration times until convergence:" << iter_count << std::endl;
 
   // write
   std::ofstream outfile("Poisson_MG.dat");
@@ -146,9 +150,9 @@ void Poisson_MG()
       for (int j = 0; j < nx + 1; j++) {
         outfile << un[i][j] << " ";
       }
-      outfile << endl;
+      outfile << std::endl;
     }
-    outfile << endl;
+    outfile << std::endl;
   }
   else {
     std::cerr << "Error: unable to open file for writing" << std::endl;
@@ -156,8 +160,9 @@ void Poisson_MG()
   return;
 }
 
-void restriction(int nxf, int nyf, int nxc, int nyc, vector<vector<double>> r,
-                 vector<vector<double>> &ec)
+void restriction(int nxf, int nyf, int nxc, int nyc,
+                 std::vector<std::vector<double>> r,
+                 std::vector<std::vector<double>> &ec)
 {
   for (int i = 1; i < nyc; i++) {
     for (int j = 1; j < nxc; j++) {
@@ -179,8 +184,10 @@ void restriction(int nxf, int nyf, int nxc, int nyc, vector<vector<double>> r,
   }
   return;
 }
+
 void prolongation(int nxc, int nyc, int nxf, int nyf,
-                  vector<vector<double>> unc, vector<vector<double>> ef)
+                  std::vector<std::vector<double>> unc,
+                  std::vector<std::vector<double>> ef)
 {
   for (int i = 0; i < nyc; i++) {
     for (int j = 0; j < nxc; j++) {
@@ -202,10 +209,12 @@ void prolongation(int nxc, int nyc, int nxf, int nyf,
   }
   return;
 }
+
 void GaussSeidel_MG(int nx, int ny, double dx, double dy,
-                    vector<vector<double>> f, vector<vector<double>> &un, int V)
+                    std::vector<std::vector<double>> f,
+                    std::vector<std::vector<double>> &un, int V)
 {
-  vector<vector<double>> rt(ny + 1, vector<double>(nx + 1, 0.0));
+  std::vector<std::vector<double>> rt(ny + 1, std::vector<double>(nx + 1, 0.0));
   double den = -2.0 / dx / dx - 2.0 / dy / dy;
   for (int iter = 0; iter < V; iter++) {
     // compute solution at next time step
